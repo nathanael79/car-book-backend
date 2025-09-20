@@ -1,0 +1,16 @@
+{
+    // VS Code launch configuration untuk Go
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug API (main.go)",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug", // gunakan mode debug agar breakpoint bekerja
+            "program": "${workspaceFolder}", // jalankan dari root project
+            "cwd": "${workspaceFolder}", // current working directory
+            "buildFlags": "", // opsional, bisa diisi tag build
+            "args": [], // isi jika butuh argumen saat run
+        }
+    ]
+}
