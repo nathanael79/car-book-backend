@@ -3,7 +3,9 @@ package service
 import (
 	"book-car/dto"
 	"book-car/model"
+	"book-car/pkg/pagination"
 	"book-car/repository"
+	"log"
 )
 
 type CarBrandService struct {
@@ -14,8 +16,8 @@ func CarBrandServiceImpl(carBrandRepository *repository.CarBrandRepository) *Car
 	return &CarBrandService{carBrandRepository: carBrandRepository}
 }
 
-func (cb *CarBrandService) FindAll() (*[]model.CarBrand, error) {
-	result, err := cb.carBrandRepository.FindAll()
+func (cb *CarBrandService) FindAll(pagination pagination.Pagination) (*[]model.CarBrand, error) {
+	result, err := cb.carBrandRepository.FindAll(pagination)
 
 	if err != nil {
 		return nil, err
@@ -44,4 +46,23 @@ func (cb *CarBrandService) Create(carBrandRequest *dto.CarBrandRequest) (*model.
 	}
 
 	return result, nil
+}
+
+func (cb *CarBrandService) Update(ID string, carBrandRequest dto.CarBrandRequest) (*model.CarBrand, error) {
+	activeCarBrand, err := cb.carBrandRepository.FindByID(ID)
+	if err != nil {
+		log.Println("car brand is not found")
+		return nil, err
+	}
+
+	newCarBrandData := model.CarBrand{
+		Name: carBrandRequest.Name,
+	}
+
+	updatedCarBrand, err := cb.carBrandRepository.Update(&newCarBrandData, activeCarBrand)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedCarBrand, nil
 }

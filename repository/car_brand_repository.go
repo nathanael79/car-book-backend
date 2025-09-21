@@ -2,6 +2,7 @@ package repository
 
 import (
 	"book-car/model"
+	"book-car/pkg/pagination"
 
 	"gorm.io/gorm"
 )
@@ -26,10 +27,10 @@ func (cb *CarBrandRepository) FindByID(id string) (*model.CarBrand, error) {
 	return &carBrand, nil
 }
 
-func (cb *CarBrandRepository) FindAll() (*[]model.CarBrand, error) {
+func (cb *CarBrandRepository) FindAll(pagination pagination.Pagination) (*[]model.CarBrand, error) {
 	var carBrands []model.CarBrand
 
-	result := cb.db.Find(&carBrands)
+	result := cb.db.Scopes(pagination.Scope()).Find(&carBrands)
 
 	if result.Error != nil {
 		return nil, result.Error
@@ -48,15 +49,18 @@ func (cb *CarBrandRepository) Create(carBrand model.CarBrand) (*model.CarBrand, 
 	return &carBrand, nil
 }
 
-func (cb *CarBrandRepository) Update(carBrand model.CarBrand) (*model.CarBrand, error) {
-	result := cb.db.Save(&carBrand)
-
-	if result.Error != nil {
-		return nil, result.Error
+func (cb *CarBrandRepository) Update(patch *model.CarBrand, active *model.CarBrand) (*model.CarBrand, error) {
+	// Update field non-zero dari patch ke row active (berdasar PK di active)
+	if err := cb.db.Model(active).Updates(patch).Error; err != nil {
+		return nil, err
 	}
 
-	return &carBrand, nil
+	// Reload agar UpdatedAt / trigger DB terambil (opsional jika DB tak support RETURNING)
+	if err := cb.db.First(active, "id = ?", active.ID).Error; err != nil {
+		return nil, err
+	}
 
+	return active, nil
 }
 
 func (cb *CarBrandRepository) DeleteByID(carBrand *model.CarBrand) error {

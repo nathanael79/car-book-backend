@@ -8,15 +8,26 @@ import (
 	"book-car/service/authentication"
 	"book-car/service/authentication/jwt"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
+func LoadEnv(env string) {
+	file := ".env." + env
+	if err := godotenv.Load(file); err != nil {
+		log.Printf("Warning: gagal load %s, pakai OS env", file)
+	}
+}
+
 func main() {
-	dsn := "host=localhost user=postgres password=postgres dbname=car_book port=5432 sslmode=disable TimeZone=Asia/Jakarta"
+	LoadEnv("dev")
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"))
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
@@ -54,6 +65,7 @@ func main() {
 	{
 		newCarBrandRoute.GET("", carBrandController.FindAll)
 		newCarBrandRoute.POST("/create", carBrandController.Create)
+		newCarBrandRoute.PATCH("/update/:id", carBrandController.Update)
 		newCarBrandRoute.GET("/:id", carBrandController.FindOneByID)
 	}
 	router.Run()

@@ -2,8 +2,10 @@ package controller
 
 import (
 	"book-car/dto"
+	"book-car/pkg/pagination"
 	"book-car/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -18,7 +20,11 @@ func CarBrandControllerImpl(carBrandService *service.CarBrandService) *CarBrandC
 }
 
 func (cb *CarBrandController) FindAll(ctx *gin.Context) {
-	carBrands, err := cb.carBrandService.FindAll()
+	pageNumber, _ := strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	sizeNumber, _ := strconv.Atoi(ctx.DefaultQuery("size", "10"))
+
+	pagination := pagination.New(pageNumber, sizeNumber)
+	carBrands, err := cb.carBrandService.FindAll(pagination)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -82,4 +88,30 @@ func (cb *CarBrandController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": newCarBrand,
 	})
+}
+
+func (cb *CarBrandController) Update(ctx *gin.Context) {
+	var carBrandRequest dto.CarBrandRequest
+	ID := ctx.Param("id")
+
+	if err := ctx.ShouldBindJSON(&carBrandRequest); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	result, err := cb.carBrandService.Update(ID, carBrandRequest)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": result,
+	})
+
 }
