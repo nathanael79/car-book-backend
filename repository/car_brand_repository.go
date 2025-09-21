@@ -63,7 +63,7 @@ func (cb *CarBrandRepository) Update(patch *model.CarBrand, active *model.CarBra
 	return active, nil
 }
 
-func (cb *CarBrandRepository) DeleteByID(carBrand *model.CarBrand) error {
+func (cb *CarBrandRepository) Delete(carBrand *model.CarBrand) error {
 	result := cb.db.Delete(carBrand)
 
 	if result.Error != nil {

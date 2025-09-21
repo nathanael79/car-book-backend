@@ -66,3 +66,18 @@ func (cb *CarBrandService) Update(ID string, carBrandRequest dto.CarBrandRequest
 
 	return updatedCarBrand, nil
 }
+
+func (cb *CarBrandService) Delete(ID string) error {
+	activeCarBrand, err := cb.carBrandRepository.FindByID(ID)
+	if err != nil {
+		log.Println("car brand is not found")
+		return err
+	}
+
+	result := cb.carBrandRepository.Delete(activeCarBrand)
+	if result != nil {
+		return result
+	}
+
+	return nil
+}

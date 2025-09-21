@@ -67,6 +67,7 @@ func main() {
 		newCarBrandRoute.POST("/create", carBrandController.Create)
 		newCarBrandRoute.PATCH("/update/:id", carBrandController.Update)
 		newCarBrandRoute.GET("/:id", carBrandController.FindOneByID)
+		newCarBrandRoute.DELETE("/:id", carBrandController.Delete)
 	}
 	router.Run()
 }

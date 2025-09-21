@@ -115,3 +115,21 @@ func (cb *CarBrandController) Update(ctx *gin.Context) {
 	})
 
 }
+
+func (cb *CarBrandController) Delete(ctx *gin.Context) {
+	ID := ctx.Param("id")
+
+	result := cb.carBrandService.Delete(ID)
+
+	if result != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"error": result.Error(),
+		})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "deleted",
+	})
+}
