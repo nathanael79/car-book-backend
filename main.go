@@ -40,10 +40,15 @@ func main() {
 
 	userRepository := repository.UserRepositoryImpl(db)
 	carBrandRepository := repository.CarBrandRepositoryImpl(db)
+	carTypeRepository := repository.CarTypeRepositoryImpl(db)
+
 	authenticationService := authentication.AuthenticationServiceImpl(userRepository)
 	carBrandService := service.CarBrandServiceImpl(carBrandRepository)
+	carTypeService := service.CarTypeServiceImpl(carTypeRepository, carBrandRepository)
+
 	authenticatonController := controller.AuthenticationControllerImpl(authenticationService)
 	carBrandController := controller.CarBrandControllerImpl(carBrandService)
+	carTypeController := controller.CarTypeControllerImpl(carTypeService)
 
 	router := gin.Default()
 
@@ -68,6 +73,15 @@ func main() {
 		newCarBrandRoute.PATCH("/update/:id", carBrandController.Update)
 		newCarBrandRoute.GET("/:id", carBrandController.FindOneByID)
 		newCarBrandRoute.DELETE("/:id", carBrandController.Delete)
+	}
+
+	newCarTypeRoute := protected.Group("/car-type")
+	{
+		newCarTypeRoute.GET("", carTypeController.FindAll)
+		newCarTypeRoute.POST("/create", carTypeController.Create)
+		newCarTypeRoute.PATCH("/update/:id", carTypeController.Update)
+		newCarTypeRoute.GET("/:id", carTypeController.FindOneByID)
+		newCarTypeRoute.DELETE("/:id", carTypeController.Delete)
 	}
 	router.Run()
 }

@@ -4,6 +4,7 @@ import (
 	"book-car/model"
 	"book-car/pkg/pagination"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -15,7 +16,7 @@ func CarBrandRepositoryImpl(db *gorm.DB) *CarBrandRepository {
 	return &CarBrandRepository{db: db}
 }
 
-func (cb *CarBrandRepository) FindByID(id string) (*model.CarBrand, error) {
+func (cb *CarBrandRepository) FindByID(id uuid.UUID) (*model.CarBrand, error) {
 	var carBrand model.CarBrand
 
 	result := cb.db.Where("id = ?", id).First(&carBrand)

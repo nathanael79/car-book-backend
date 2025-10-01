@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 )
 
 type CarBrandController struct {
@@ -38,7 +39,7 @@ func (cb *CarBrandController) FindAll(ctx *gin.Context) {
 }
 
 func (cb *CarBrandController) FindOneByID(ctx *gin.Context) {
-	ID := ctx.Param("id")
+	ID := uuid.MustParse(ctx.Param("id"))
 
 	result, err := cb.carBrandService.FindOneByID(ID)
 
@@ -92,7 +93,7 @@ func (cb *CarBrandController) Create(ctx *gin.Context) {
 
 func (cb *CarBrandController) Update(ctx *gin.Context) {
 	var carBrandRequest dto.CarBrandRequest
-	ID := ctx.Param("id")
+	ID := uuid.MustParse(ctx.Param("id"))
 
 	if err := ctx.ShouldBindJSON(&carBrandRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -117,7 +118,7 @@ func (cb *CarBrandController) Update(ctx *gin.Context) {
 }
 
 func (cb *CarBrandController) Delete(ctx *gin.Context) {
-	ID := ctx.Param("id")
+	ID := uuid.MustParse(ctx.Param("id"))
 
 	result := cb.carBrandService.Delete(ID)
 

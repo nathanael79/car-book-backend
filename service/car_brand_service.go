@@ -6,6 +6,8 @@ import (
 	"book-car/pkg/pagination"
 	"book-car/repository"
 	"log"
+
+	"github.com/google/uuid"
 )
 
 type CarBrandService struct {
@@ -26,7 +28,7 @@ func (cb *CarBrandService) FindAll(pagination pagination.Pagination) (*[]model.C
 	return result, nil
 }
 
-func (cb *CarBrandService) FindOneByID(ID string) (*model.CarBrand, error) {
+func (cb *CarBrandService) FindOneByID(ID uuid.UUID) (*model.CarBrand, error) {
 	result, err := cb.carBrandRepository.FindByID(ID)
 
 	if err != nil {
@@ -48,7 +50,7 @@ func (cb *CarBrandService) Create(carBrandRequest *dto.CarBrandRequest) (*model.
 	return result, nil
 }
 
-func (cb *CarBrandService) Update(ID string, carBrandRequest dto.CarBrandRequest) (*model.CarBrand, error) {
+func (cb *CarBrandService) Update(ID uuid.UUID, carBrandRequest dto.CarBrandRequest) (*model.CarBrand, error) {
 	activeCarBrand, err := cb.carBrandRepository.FindByID(ID)
 	if err != nil {
 		log.Println("car brand is not found")
@@ -67,7 +69,7 @@ func (cb *CarBrandService) Update(ID string, carBrandRequest dto.CarBrandRequest
 	return updatedCarBrand, nil
 }
 
-func (cb *CarBrandService) Delete(ID string) error {
+func (cb *CarBrandService) Delete(ID uuid.UUID) error {
 	activeCarBrand, err := cb.carBrandRepository.FindByID(ID)
 	if err != nil {
 		log.Println("car brand is not found")
