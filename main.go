@@ -42,16 +42,19 @@ func main() {
 	carBrandRepository := repository.CarBrandRepositoryImpl(db)
 	carTypeRepository := repository.CarTypeRepositoryImpl(db)
 	carRepository := repository.CarRepositoryImpl(db)
+	agendaRepository := repository.AgendaRepositoryImpl(db)
 
 	authenticationService := authentication.AuthenticationServiceImpl(userRepository)
 	carBrandService := service.CarBrandServiceImpl(carBrandRepository)
 	carTypeService := service.CarTypeServiceImpl(carTypeRepository, carBrandRepository)
 	carService := service.CarServiceImpl(carRepository, carTypeRepository)
+	agendaService := service.AgendaServiceImpl(userRepository, carTypeRepository, carRepository, agendaRepository)
 
-	authenticatonController := controller.AuthenticationControllerImpl(authenticationService)
+	authenticationController := controller.AuthenticationControllerImpl(authenticationService)
 	carBrandController := controller.CarBrandControllerImpl(carBrandService)
 	carTypeController := controller.CarTypeControllerImpl(carTypeService)
 	carController := controller.CarControllerImpl(carService)
+	agendaController := controller.AgendaControllerImpl(agendaService)
 
 	router := gin.Default()
 
@@ -60,13 +63,13 @@ func main() {
 	api := router.Group("/api")
 	v1 := api.Group("/v1")
 
-	v1.POST("/register", authenticatonController.Register)
-	v1.POST("/login", authenticatonController.Login)
+	v1.POST("/register", authenticationController.Register)
+	v1.POST("/login", authenticationController.Login)
 
 	protected := v1.Group("/")
 	protected.Use(jwt.AuthMiddleware())
 	{
-		protected.GET("/me", authenticatonController.GetUserLoginInformation)
+		protected.GET("/me", authenticationController.GetUserLoginInformation)
 	}
 
 	newCarBrandRoute := protected.Group("/car-brand")
@@ -94,6 +97,12 @@ func main() {
 		newCarRoute.PATCH("/update/:id", carController.Update)
 		newCarRoute.GET("/:id", carController.FindOneByID)
 		newCarRoute.DELETE("/:id", carController.Delete)
+	}
+
+	newAgenda := protected.Group("/agenda")
+	{
+		newAgenda.POST("/create", agendaController.CreateAgenda)
+		newAgenda.POST("/find-car-by-start-date-end-date", agendaController.FindCarByStartDatendEndDate)
 	}
 	router.Run()
 }

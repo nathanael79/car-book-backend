@@ -49,7 +49,7 @@ func (cs *CarService) Create(carRequest *dto.CarRequest) (*model.Car, error) {
 		return nil, err
 	}
 
-	licenseNumberExpiredAt, err := utils.ConvertStringToDateTime(carRequest.LicenseNumberExpired)
+	licenseNumberExpiredAt, err := utils.ConvertStringToDate(carRequest.LicenseNumberExpired)
 
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (cs *CarService) Update(id uuid.UUID, carRequest *dto.CarRequest) (*model.C
 		Color:              carRequest.Color,
 	}
 
-	licenseNumberExpiredAt, err := utils.ConvertStringToDateTime(carRequest.LicenseNumberExpired)
+	licenseNumberExpiredAt, err := utils.ConvertStringToDate(carRequest.LicenseNumberExpired)
 
 	if err != nil {
 		return nil, err

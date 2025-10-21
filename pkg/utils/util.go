@@ -1,13 +1,16 @@
 package utils
 
-import "time"
+import (
+	"time"
+)
 
-func ConvertStringToDateTime(dateString string) (time.Time, error) {
-	t, err := time.Parse("2006-01-02", dateString)
+func ConvertStringToDate(dateString string) (time.Time, error) {
+	const layout = "2006-01-02"
+	parsedDate, err := time.Parse(layout, dateString)
 
 	if err != nil {
 		return time.Time{}, err
 	}
 
-	return t, nil
+	return parsedDate, nil
 }

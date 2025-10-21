@@ -35,7 +35,7 @@ func (a *AuthenticationService) Register(authenticationRequest *dto.Authenticati
 		return "", err
 	}
 
-	token, err := jwt.CreateToken(activeUser.Email)
+	token, err := jwt.CreateToken(activeUser.ID, activeUser.Email)
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (a *AuthenticationService) Login(authenticationRequest dto.AuthenticationRe
 		return "", checkPassword
 	}
 
-	token, err := jwt.CreateToken(activeUser.Email)
+	token, err := jwt.CreateToken(activeUser.ID, activeUser.Email)
 	if err != nil {
 		return "", err
 	}

@@ -40,6 +40,18 @@ func (ct *CarTypeRepository) FindAll(pagination *pagination.Pagination) (*[]mode
 	return &carTypes, nil
 }
 
+func (ct *CarTypeRepository) FindAllByCarBrandID(carBrandID uuid.UUID) (*[]model.CarType, error) {
+	var carTypes []model.CarType
+
+	result := ct.db.Where("car_brand_id = ?", carBrandID).Find(&carTypes)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &carTypes, nil
+}
+
 func (ct *CarTypeRepository) Create(carType *model.CarType) (*model.CarType, error) {
 	result := ct.db.Create(carType)
 

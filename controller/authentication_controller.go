@@ -68,6 +68,7 @@ func (ac *AuthenticationController) Login(ctx *gin.Context) {
 func (ac *AuthenticationController) GetUserLoginInformation(ctx *gin.Context) {
 	claims := ctx.MustGet(jwt.ContextClaimsKey).(*jwt.UserClaims)
 	ctx.JSON(http.StatusOK, gin.H{
+		"id":    claims.ID,
 		"email": claims.Email,
 		"exp":   claims.ExpiresAt.Time,
 	})

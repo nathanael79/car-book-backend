@@ -9,20 +9,23 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 var secret_key = []byte("34C427392FE57CFCDC1B2FC395627")
 
 type UserClaims struct {
+	ID    string `json:"id"`
 	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
 const ContextClaimsKey = "claims"
 
-func CreateToken(email string) (string, error) {
+func CreateToken(id uuid.UUID, email string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
+			"id":    id,
 			"email": email,
 			"exp":   time.Now().Add(time.Hour * 24).Unix(),
 		})

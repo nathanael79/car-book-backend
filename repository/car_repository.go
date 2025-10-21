@@ -27,6 +27,18 @@ func (cr *CarRepository) FindOne(id uuid.UUID) (*model.Car, error) {
 	return &car, nil
 }
 
+func (cr *CarRepository) FindCarByCarTypeID(carTypeID uuid.UUID) ([]model.Car, error) {
+	var cars []model.Car
+
+	result := cr.db.Where("car_type_id = ?", carTypeID).Find(&cars)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return cars, nil
+}
+
 func (cr *CarRepository) FindAll(pagination pagination.Pagination) ([]model.Car, error) {
 	var cars []model.Car
 
